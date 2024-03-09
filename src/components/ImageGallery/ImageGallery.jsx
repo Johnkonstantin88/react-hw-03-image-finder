@@ -48,7 +48,10 @@ export class ImageGallery extends Component {
   }
 
   onLoadMore = () => {
-    this.setState({ currentPage: (this.state.currentPage += 1), isLoading: true, });
+    this.setState(prevState => ({
+      currentPage: (prevState.currentPage += 1),
+      isLoading: true,
+    }));
     getPictures(this.props.searchValue, this.state.currentPage)
       .then(r => {
         if (!r.ok) {
@@ -59,11 +62,9 @@ export class ImageGallery extends Component {
       .then(data => {
         const { hits } = data;
 
-          this.setState(prevState => ({
+        this.setState(prevState => ({
           pictures: [...prevState.pictures, ...hits],
         }));
-     
-        
       })
       .catch(this.onShowError)
       .finally(() => {
@@ -96,7 +97,7 @@ export class ImageGallery extends Component {
     return (
       <>
         {isLoading && <Loader />}
-        <GalleryList >
+        <GalleryList>
           {pictures &&
             pictures.map(({ id, webformatURL, largeImageURL }, idx) => {
               return (
@@ -107,7 +108,7 @@ export class ImageGallery extends Component {
                   showModal={this.onShowModal}
                 />
               );
-            })} 
+            })}
         </GalleryList>
         {pictures.length > 0 && <Button onLoadMore={this.onLoadMore} />}
         {isShowModal && (
